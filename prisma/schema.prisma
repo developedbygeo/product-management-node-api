@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  Product   Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum UPDATE_STATUS {
+  IN_PROGRESS
+  SHIPPED
+  DEPRECATED
+}
+
+model Product {
+  id          String @id @default(uuid())
+  name        String @db.VarChar(255)
+  belongsToId String
+  // one to many relationship, a user can have many products but each product belongs to one user
+  belongsTo   User   @relation(fields: [belongsToId], references: [id])
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  ProductUpdate ProductUpdate[]
+}
+
+model ProductUpdate {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  status      UPDATE_STATUS @default(IN_PROGRESS)
+  version     String?
+  asset       String?
+  productId   String
+  product     Product       @relation(fields: [productId], references: [id])
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  UpdatePoint UpdatePoint[]
+}
+
+model UpdatePoint {
+  id          String @id @default(uuid())
+  name        String @db.VarChar(255)
+  description String
+
+  updateId String
+  update   ProductUpdate @relation(fields: [updateId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
