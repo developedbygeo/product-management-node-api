@@ -13,11 +13,13 @@
     "dependencies": {
         "@prisma/client": "^5.19.1",
         "express": "^4.21.0",
+        "morgan": "^1.10.0",
         "portfinder": "^1.0.32",
         "winston": "^3.14.2"
     },
     "devDependencies": {
         "@types/express": "^5.0.0",
+        "@types/morgan": "^1.9.9",
         "@types/node": "^22.5.5",
         "prettier": "3.3.3",
         "prisma": "^5.19.1",
