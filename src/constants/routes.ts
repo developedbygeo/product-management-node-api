@@ -1,6 +1,10 @@
 export const ROUTES_ROOT = {
     /* Auth */
     API: '/api',
+
+    /* User handling */
+    REGISTER: '/register',
+    LOG_IN: '/log-in',
 };
 
 export const PROTECTED_ROUTES = {
