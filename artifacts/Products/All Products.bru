@@ -1,0 +1,15 @@
+meta {
+  name: All Products
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:{{port}}/api/products
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
