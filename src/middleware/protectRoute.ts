@@ -4,7 +4,7 @@ import { RequestWithUser } from '../types/user';
 import { logger } from '../utils/logger';
 import { LOG_MESSAGES } from '../constants/logMessages';
 import { sendRejectionResponse } from '../modules/responses';
-import { API_RESPONSE_MESSAGES } from '../constants/messages';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 /**
  * Middleware to protect routes by verifying the JWT token in the request headers.
@@ -28,13 +28,13 @@ export const protectRoute = async (
     if (!bearer || !bearer.startsWith('Bearer ')) {
         sendRejectionResponse(
             res,
-            401,
-            API_RESPONSE_MESSAGES.USER_UNAUTHORIZED
+            StatusCodes.UNAUTHORIZED,
+            ReasonPhrases.UNAUTHORIZED
         );
         sendRejectionResponse(
             res,
-            401,
-            API_RESPONSE_MESSAGES.USER_UNAUTHORIZED
+            StatusCodes.UNAUTHORIZED,
+            ReasonPhrases.UNAUTHORIZED
         );
         logger.error(LOG_MESSAGES.NO_BEARER);
     }
@@ -44,8 +44,8 @@ export const protectRoute = async (
     if (!token) {
         sendRejectionResponse(
             res,
-            401,
-            API_RESPONSE_MESSAGES.USER_UNAUTHORIZED
+            StatusCodes.UNAUTHORIZED,
+            ReasonPhrases.UNAUTHORIZED
         );
         logger.error(LOG_MESSAGES.NO_TOKEN);
     }
@@ -59,8 +59,8 @@ export const protectRoute = async (
         logger.error(`${LOG_MESSAGES.INVALID_TOKEN}: ${error}`);
         sendRejectionResponse(
             res,
-            401,
-            API_RESPONSE_MESSAGES.USER_INVALID_TOKEN
+            StatusCodes.UNAUTHORIZED,
+            ReasonPhrases.UNAUTHORIZED
         );
     }
 };
