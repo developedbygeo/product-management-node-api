@@ -9,14 +9,14 @@ export const ROUTES_ROOT = {
 
 export const PROTECTED_ROUTES = {
     /* Products */
-    ALL_PRODUCTS: '/products',
+    ALL_PRODUCTS: '/product',
     SPECIFIC_PRODUCT: '/product/:id',
 
     /* Updates */
-    ALL_UPDATES: '/updates',
+    ALL_UPDATES: '/update',
     SPECIFIC_UPDATE: '/update/:id',
 
     /* Update Points */
-    ALL_UPDATE_POINTS: '/update-points',
+    ALL_UPDATE_POINTS: '/update-point',
     SPECIFIC_UPDATE_POINT: '/update-point/:id',
 } as const;
