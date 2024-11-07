@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { RequestWithUser } from '../types/user';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { ExtractedUserFromJwt, RequestWithUser } from '../types/user';
 import { logger } from '../utils/logger';
 import { LOG_MESSAGES } from '../constants/logMessages';
 import { sendRejectionResponse } from '../modules/responses';
@@ -42,20 +42,32 @@ export const protectRoute = async (
     const token = bearer!.split('Bearer ')[1];
     // Verify the token
     if (!token) {
+        logger.error(LOG_MESSAGES.NO_TOKEN);
+
         sendRejectionResponse(
             res,
             StatusCodes.UNAUTHORIZED,
             ReasonPhrases.UNAUTHORIZED
         );
-        logger.error(LOG_MESSAGES.NO_TOKEN);
     }
 
     // decode the token
     try {
-        const user = jwt.verify(token, process.env.JWT_SECRET!);
+        const user = jwt.verify(token, process.env.JWT_SECRET!) as
+            | ExtractedUserFromJwt
+            | undefined;
+
+        if (!user) {
+            sendRejectionResponse(
+                res,
+                StatusCodes.UNAUTHORIZED,
+                ReasonPhrases.UNAUTHORIZED
+            );
+        }
         req.user = user;
         next();
     } catch (error) {
+        console.error(error);
         logger.error(`${LOG_MESSAGES.INVALID_TOKEN}: ${error}`);
         sendRejectionResponse(
             res,
