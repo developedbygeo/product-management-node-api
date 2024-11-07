@@ -1,10 +1,12 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
 import { User } from '@prisma/client';
 
 export type RequestWithUser = Request & {
-    user?: string | jwt.JwtPayload;
+    user?: ExtractedUserFromJwt;
 };
+
+export type ExtractedUserFromJwt = JwtPayload & Pick<User, 'id' | 'username'>;
 
 export type CreateUserRequest = Omit<Request, 'body'> & {
     body: {
