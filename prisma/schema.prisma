@@ -12,7 +12,7 @@ model User {
   username  String    @unique
   email     String    @unique
   password  String
-  Product   Product[]
+  products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -30,9 +30,11 @@ model Product {
   // one to many relationship, a user can have many products but each product belongs to one user
   belongsTo   User   @relation(fields: [belongsToId], references: [id])
 
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  ProductUpdate ProductUpdate[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  updates   ProductUpdate[]
+
+  @@unique([id, belongsToId])
 }
 
 model ProductUpdate {
@@ -45,9 +47,9 @@ model ProductUpdate {
   productId   String
   product     Product       @relation(fields: [productId], references: [id])
 
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  UpdatePoint UpdatePoint[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  updatePoints UpdatePoint[]
 }
 
 model UpdatePoint {
