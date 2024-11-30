@@ -20,3 +20,8 @@ export const PROTECTED_ROUTES = {
     ALL_UPDATE_POINTS: '/update-point',
     SPECIFIC_UPDATE_POINT: '/update-point/:id',
 } as const;
+
+export const PROTECTED_ROUTES_SEGMENTS = {
+    ROOT: '/',
+    SPECIFIC_ID: '/:id',
+};
