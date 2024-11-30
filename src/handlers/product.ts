@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../db';
 import { RequestWithUser } from '../types/user';
-import { StatusCodes } from 'http-status-codes';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { logger } from '../utils/logger';
 import { LOG_MESSAGES } from '../constants/logMessages';
 
@@ -38,12 +38,13 @@ export const getSpecificProduct = async (
     if (!product) {
         logger.error(LOG_MESSAGES.PRODUCT_NOT_FOUND);
         res.status(StatusCodes.NOT_FOUND).json({
-            error: LOG_MESSAGES.PRODUCT_NOT_FOUND,
+            error: ReasonPhrases.NOT_FOUND,
         });
         return;
     }
 
     res.status(StatusCodes.OK).json({ data: product });
+    return;
 };
 
 export const createProduct = async (req: RequestWithUser, res: Response) => {
@@ -59,6 +60,7 @@ export const createProduct = async (req: RequestWithUser, res: Response) => {
     logger.info(`Created product: ${product}`);
 
     res.status(StatusCodes.CREATED).json({ data: product });
+    return;
 };
 
 export const updateProduct = async (req: RequestWithUser, res: Response) => {
@@ -82,23 +84,34 @@ export const updateProduct = async (req: RequestWithUser, res: Response) => {
     logger.info(`Updated product: ${updated}`);
 
     res.status(StatusCodes.OK).json({ data: updated });
+    return;
 };
 
 export const deleteProduct = async (req: RequestWithUser, res: Response) => {
     const { id: productId } = req.params;
     logger.info(`Deleting product with id: ${productId}`);
 
-    const deleted = await prisma.product.delete({
-        where: {
-            id_belongsToId: {
-                id: productId,
-                belongsToId: req!.user!.id,
+    try {
+        const deleted = await prisma.product.delete({
+            where: {
+                id_belongsToId: {
+                    id: productId,
+                    belongsToId: req!.user!.id,
+                },
             },
-        },
-    });
+        });
 
-    logger.info(`Deleted product with id: ${deleted.id}`);
-    logger.info(`Deleted product: ${deleted}`);
+        logger.info(`Deleted product with id: ${deleted.id}`);
+        logger.info(`Deleted product: ${deleted}`);
 
-    res.status(StatusCodes.OK).json({ data: deleted });
+        res.status(StatusCodes.OK).json({ data: deleted });
+    } catch (error) {
+        logger.error(
+            `Unable to delete item with id: ${productId}. Error: ${error}`
+        );
+        res.status(StatusCodes.NOT_FOUND).json({
+            error: LOG_MESSAGES.PRODUCT_NOT_FOUND,
+        });
+        return;
+    }
 };
