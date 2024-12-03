@@ -1,0 +1,15 @@
+meta {
+  name: Update Point - Delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:{{port}}/api/update-point/f2786baf-de69-40be-831a-20a3c4b51c42
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Update Point - Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:{{port}}/api/update-point/9d535f78-67bf-46ed-a9fb-a8a9ed7a7d73
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
+
+body:json {
+  {
+    "name": "Bug #2222",
+    "description": "Minor changes"
+  }
+}

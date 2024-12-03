@@ -5,11 +5,17 @@ meta {
 }
 
 put {
-  url: http://localhost:{{port}}/api/product/1
-  body: none
+  url: http://localhost:{{port}}/api/product/{{dummy_product}}
+  body: json
   auth: bearer
 }
 
 auth:bearer {
   token: {{dummy_token}}
+}
+
+body:json {
+  {
+    "name": "My new product"
+  }
 }

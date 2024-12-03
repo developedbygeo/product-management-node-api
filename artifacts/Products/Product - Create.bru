@@ -1,0 +1,21 @@
+meta {
+  name: Product - Create
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:{{port}}/api/product
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
+
+body:json {
+  {
+    "name": "This is another test"
+  }
+}

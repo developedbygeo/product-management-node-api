@@ -1,0 +1,15 @@
+meta {
+  name: Update Points - All
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:{{port}}/api/update-point
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}

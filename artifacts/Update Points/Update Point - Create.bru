@@ -1,0 +1,23 @@
+meta {
+  name: Update Point - Create
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:{{port}}/api/update-point
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
+
+body:json {
+  {
+    "updateId": "e1ae9f9a-bf25-4d59-9a1e-ad0c03e775ca",
+    "name": "Bug #2323",
+    "description": "Fixing bug where user cant login"
+  }
+}

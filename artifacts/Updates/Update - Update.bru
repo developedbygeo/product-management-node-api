@@ -1,0 +1,24 @@
+meta {
+  name: Update - Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:{{port}}/api/update/{{dummy_update}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
+
+body:json {
+  {
+    "title": "My new update",
+    "body": "Just updating an update",
+    "status": "SHIPPED",
+    "version": "1.0.0"
+  }
+}

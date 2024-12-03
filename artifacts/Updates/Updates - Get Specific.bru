@@ -1,0 +1,15 @@
+meta {
+  name: Updates - Get Specific
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:{{port}}/api/update/{{dummy_update}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}

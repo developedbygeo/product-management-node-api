@@ -1,0 +1,23 @@
+meta {
+  name: Update - Create
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:{{port}}/api/update
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
+
+body:json {
+  {
+    "productId": "{{dummy_product}}",
+    "title": "Update - new version",
+    "body": "Setting up the version"
+  }
+}

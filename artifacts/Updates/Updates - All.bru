@@ -1,0 +1,15 @@
+meta {
+  name: Updates - All
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:{{port}}/api/update
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}

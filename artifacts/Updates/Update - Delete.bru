@@ -1,0 +1,15 @@
+meta {
+  name: Update - Delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:{{port}}/api/update/{{dummy_update}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{dummy_token}}
+}
