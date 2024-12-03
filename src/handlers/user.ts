@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 import prisma from '../db';
@@ -10,7 +10,8 @@ import { sendRejectionResponse } from '../modules/responses';
 
 export const createUserHandler = async (
     req: CreateUserRequest,
-    res: Response
+    res: Response,
+    next: NextFunction
 ) => {
     try {
         const user = await prisma.user.create({
@@ -23,7 +24,7 @@ export const createUserHandler = async (
 
         const token = createToken(user);
 
-        res.json({ token });
+        res.json({ data: token });
     } catch (err: unknown | PrismaClientKnownRequestError) {
         if (
             err instanceof Prisma.PrismaClientKnownRequestError &&
@@ -69,5 +70,5 @@ export const logInHandler = async (req: SignInUserRequest, res: Response) => {
         );
 
     const token = createToken(user!);
-    res.json({ token });
+    res.json({ data: token });
 };
