@@ -13,6 +13,7 @@ import {
     validateRequiredNameProperty,
     validateRequiredTitleProperty,
     validateRequiredUpdateId,
+    validateRequiredProductId,
 } from '../modules/rawValidators';
 
 export const handleValidationErrors = (
@@ -49,6 +50,7 @@ export const validatePutSpecificUpdate = [
 export const validatePostUpdate = [
     validateRequiredTitleProperty,
     validateRequiredBodyProperty,
+    validateRequiredProductId,
     handleValidationErrors,
 ];
 
