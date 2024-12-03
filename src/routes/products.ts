@@ -14,6 +14,8 @@ import {
     validatePostSpecificProduct,
     validatePutSpecificProduct,
 } from '../middleware/validators';
+import { Request, Response, NextFunction } from 'express';
+import { handleError } from '../middleware/handleError';
 
 const router = Router();
 
@@ -30,5 +32,7 @@ router.post(
     createProduct
 );
 router.delete(PROTECTED_ROUTES_SEGMENTS.SPECIFIC_ID, deleteProduct);
+
+router.use(PROTECTED_ROUTES_SEGMENTS.ROOT, handleError);
 
 export default router;

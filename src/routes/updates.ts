@@ -11,6 +11,7 @@ import {
     validatePutSpecificUpdate,
 } from '../middleware/validators';
 import { PROTECTED_ROUTES_SEGMENTS } from '../constants/routes';
+import { handleError } from '../middleware/handleError';
 
 const router = Router();
 
@@ -23,5 +24,7 @@ router.put(
 );
 router.post(PROTECTED_ROUTES_SEGMENTS.ROOT, validatePostUpdate, createUpdate);
 router.delete(PROTECTED_ROUTES_SEGMENTS.SPECIFIC_ID, deleteUpdate);
+
+router.use(PROTECTED_ROUTES_SEGMENTS.ROOT, handleError);
 
 export default router;
