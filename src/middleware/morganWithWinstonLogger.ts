@@ -1,34 +1,22 @@
 import morgan from 'morgan';
 import { logger } from '../utils/logger';
+import { Request } from 'express';
+import { filterSensitiveData } from '../utils/data';
 
 /**
- * Middleware that integrates Morgan with Winston logger.
- *
- * This middleware logs HTTP requests using Morgan's predefined format and
- * streams the log messages to Winston logger. It logs the HTTP method, URL,
- * status code, response content length, response time, and remote address.
- *
- * @constant
- * @type {morgan}
- *
- * @example
- * // Usage in an Express application
- * import express from 'express';
- * import { morganWithWinstonLogger } from './middleware/morganWithWinstonLogger';
- *
- * const app = express();
- * app.use(morganWithWinstonLogger);
- *
- * @see {@link https://github.com/expressjs/morgan|Morgan Documentation}
- * @see {@link https://github.com/winstonjs/winston|Winston Documentation}
+ * Custom Morgan token to log the filtered request body.
  */
+morgan.token('req-body', (req: Request) => {
+    const filteredBody = filterSensitiveData(req.body);
+    return JSON.stringify(filteredBody);
+});
+
 export const morganWithWinstonLogger = morgan(
-    ':method :url :status :res[content-length] - :response-time ms - :remote-addr',
+    ':method :url :status :res[content-length] - :response-time ms - :remote-addr - req-body: :req-body',
     {
         stream: {
-            write: (message) => {
+            write: (message: string) => {
                 logger.http(message.trim());
-                console.log(message);
             },
         },
     }

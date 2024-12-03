@@ -64,3 +64,13 @@ export const validateRequiredUpdateId = body('updateId')
     .exists()
     .isString()
     .withMessage('An updateId property is required inside the body');
+
+export const validateRequiredProductId = body('productId')
+    .exists()
+    .isString()
+    .withMessage('A productId property is required inside the body');
+
+export const validateRequiredUpdatePointId = body('updatePointId')
+    .exists()
+    .isString()
+    .withMessage('An updatePointId property is required inside the body');
