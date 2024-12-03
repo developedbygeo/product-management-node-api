@@ -1,23 +1,34 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import prisma from '../db';
 import { RequestWithUser } from '../types/user';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { logger } from '../utils/logger';
 import { LOG_MESSAGES } from '../constants/logMessages';
+import { CustomError } from '../utils/errors/CustomError';
 
-export const getProducts = async (req: RequestWithUser, res: Response) => {
-    logger.info(`User in request: ${req!.user!.id}`);
-    const user = await prisma.user.findUnique({
-        where: { id: req!.user!.id },
-        include: {
-            products: true,
-        },
-    });
-    logger.info(
-        `${LOG_MESSAGES.USER_LOCATED}: ${req!.user!.id}. ${LOG_MESSAGES.USER_PRODUCTS_LOCATED}: ${user!.products.length}. ${LOG_MESSAGES.USER_PRODUCTS_LIST}: ${user!.products}`
-    );
+export const getProducts = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        logger.info(`User in request: ${req!.user!.id}`);
 
-    res.status(StatusCodes.OK).json({ data: user!.products });
+        const user = await prisma.user.findUnique({
+            where: { id: req!.user!.id },
+            include: {
+                products: true,
+            },
+        });
+        logger.info(
+            `${LOG_MESSAGES.USER_LOCATED}: ${req!.user!.id}. ${LOG_MESSAGES.USER_PRODUCTS_LOCATED}: ${user!.products.length}. ${LOG_MESSAGES.USER_PRODUCTS_LIST}: ${user!.products}`
+        );
+
+        res.status(StatusCodes.OK).json({ data: user!.products });
+    } catch (err) {
+        logger.error('Error fetching products:', { error: err });
+        next(err);
+    }
 };
 
 export const getSpecificProduct = async (
@@ -47,47 +58,67 @@ export const getSpecificProduct = async (
     return;
 };
 
-export const createProduct = async (req: RequestWithUser, res: Response) => {
-    const { name } = req.body;
-    logger.info(`Creating product with name: ${name}`);
+export const createProduct = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { name } = req.body;
+        logger.info(`Creating product with name: ${name}`);
 
-    const product = await prisma.product.create({
-        data: {
-            name,
-            belongsToId: req!.user!.id,
-        },
-    });
-    logger.info(`Created product: ${product}`);
-
-    res.status(StatusCodes.CREATED).json({ data: product });
-    return;
-};
-
-export const updateProduct = async (req: RequestWithUser, res: Response) => {
-    const { id: productId } = req.params;
-    const { name } = req.body;
-    logger.info(`Updating product with id: ${productId}`);
-
-    const updated = await prisma.product.update({
-        where: {
-            id_belongsToId: {
-                id: productId,
+        const product = await prisma.product.create({
+            data: {
+                name,
                 belongsToId: req!.user!.id,
             },
-        },
-        data: {
-            name,
-        },
-    });
+        });
+        logger.info(`Created product: ${product}`);
 
-    logger.info(`Updated product with id: ${updated.id}`);
-    logger.info(`Updated product: ${updated}`);
-
-    res.status(StatusCodes.OK).json({ data: updated });
-    return;
+        res.status(StatusCodes.CREATED).json({ data: product });
+    } catch (error) {
+        logger.error(`Error creating product: ${error}`);
+        next(error);
+    }
 };
 
-export const deleteProduct = async (req: RequestWithUser, res: Response) => {
+export const updateProduct = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id: productId } = req.params;
+        const { name } = req.body;
+        logger.info(`Updating product with id: ${productId}`);
+
+        const updated = await prisma.product.update({
+            where: {
+                id_belongsToId: {
+                    id: productId,
+                    belongsToId: req!.user!.id,
+                },
+            },
+            data: {
+                name,
+            },
+        });
+
+        logger.info(`Updated product with id: ${updated.id}`);
+        logger.info(`Updated product: ${updated}`);
+
+        res.status(StatusCodes.OK).json({ data: updated });
+    } catch (error) {
+        logger.error(`Error updating product: ${error}`);
+        next(error);
+    }
+};
+
+export const deleteProduct = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+) => {
     const { id: productId } = req.params;
     logger.info(`Deleting product with id: ${productId}`);
 
@@ -109,9 +140,6 @@ export const deleteProduct = async (req: RequestWithUser, res: Response) => {
         logger.error(
             `Unable to delete item with id: ${productId}. Error: ${error}`
         );
-        res.status(StatusCodes.NOT_FOUND).json({
-            error: LOG_MESSAGES.PRODUCT_NOT_FOUND,
-        });
-        return;
+        next(error);
     }
 };
