@@ -6,6 +6,24 @@ import { ROUTES_ROOT } from './constants/routes';
 import { morganWithWinstonLogger } from './middleware/morganWithWinstonLogger';
 import { protectRoute } from './middleware/protectRoute';
 import { createUserHandler, logInHandler } from './handlers/user';
+import { logger } from './utils/logger';
+
+process.on('uncaughtException', (err) => {
+    logger.error('Uncaught exception occurred', {
+        message: err.message,
+        stack: err.stack,
+        name: err.name,
+    });
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+    logger.error('Unhandled rejection occurred', {
+        reason: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : null,
+    });
+    process.exit(1);
+});
 
 const app = express();
 
