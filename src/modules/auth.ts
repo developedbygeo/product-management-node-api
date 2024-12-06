@@ -1,19 +1,14 @@
 import { User } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import config from '../config';
 
 // if RBAC, add role to the payload
-/**
- * Generates a JSON Web Token (JWT) for the given user.
- *
- * @param user - The user object containing user details.
- * @returns A signed JWT token with the user's id and username, valid for 1 day.
- */
 export const createToken = (user: User) => {
     return jwt.sign(
         { id: user.id, username: user.username },
-        process.env.JWT_SECRET as string,
-        { expiresIn: '1d' }
+        config.secrets.jwt as string,
+        { expiresIn: config.secrets.jwtExp }
     );
 };
 

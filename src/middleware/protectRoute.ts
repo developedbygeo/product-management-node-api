@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { NextFunction, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import { ExtractedUserFromJwt, RequestWithUser } from '../types/user';
 import { logger } from '../utils/logger';
 import { LOG_MESSAGES } from '../constants/logMessages';
 import { sendRejectionResponse } from '../modules/responses';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import config from '../config';
 
 /**
  * Middleware to protect routes by verifying the JWT token in the request headers.
@@ -53,7 +54,7 @@ export const protectRoute = async (
 
     // decode the token
     try {
-        const user = jwt.verify(token, process.env.JWT_SECRET!) as
+        const user = jwt.verify(token, config.secrets.jwt!) as
             | ExtractedUserFromJwt
             | undefined;
 
